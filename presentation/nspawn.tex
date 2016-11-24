@@ -83,23 +83,23 @@
 %	commentstyle=\color{OSEC-red}
 %}
 
-\AtBeginSection[]{
-	\frame{
+%\AtBeginSection[]{
+%	\frame{
+%
+%		\begin{center}
+%
+%			{\usebeamerfont{section name}\usebeamercolor[fg]{section name}Część~\insertsectionnumber}
+%			\vskip1em\par
+%
+%			\begin{beamercolorbox}[sep=12pt,center]{palette primary}
+%				\usebeamerfont{section title}\insertsection\par
+%			\end{beamercolorbox}
+%		\end{center}
+%		%\sectionpage
+%	}
+%}
 
-		\begin{center}
-
-			{\usebeamerfont{section name}\usebeamercolor[fg]{section name}Część~\insertsectionnumber}
-			\vskip1em\par
-
-			\begin{beamercolorbox}[sep=12pt,center]{palette primary}
-				\usebeamerfont{section title}\insertsection\par
-			\end{beamercolorbox}
-		\end{center}
-		%\sectionpage
-	}
-}
-
-\title{systemd-nspawn \\ zarządzanie kontenerami oraz integracja z system operacyjnym}
+\title{systemd-nspawn \\ zarządzanie kontenerami}
 \author{Radosław Kujawa -- radoslaw.kujawa@osec.pl}
 \institute{OSEC}
 
@@ -118,14 +118,45 @@
 \end{frame}
 
 
-\section{Foo}
-
 \begin{frame}
-\frametitle{Foobar}
+\frametitle{}
 \begin{itemize}
-	\item rkt
+	\item Ułatwienie procesu developmentu oraz testowania 
+	\item Utrudnienie w procesie wdrożenia na produkcje
+	\begin{itemize}
+		\item Docker zorientowany na proces developmentu i testowania
+	\end{itemize}
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{Kontenery systemd}
+\begin{itemize}
+	\item Oparte o mechanizm namespace.
+	\item Dobrze zintegrowane z innymi narzędziami systemd.
+	\item Chronione SELinuxem.
+	\item Korzystające z narzędzi hosta do instalacji kontenerów, a także zarządzania nimi.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Instalacja}
+\begin{itemize}
+	\item Zalecane systemd 231 lub nowsze (Fedora 25).
+	\item Paczka {\tt systemd-container} dostarcza potrzebne narzędzia.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Instalacja kontenera}
+\begin{itemize}
+	\item Fedora: {\tt dnf --releasever=24 --installroot=/container/foo/ install systemd passwd dnf fedora-release}
+	\item Debian: {\tt debootstrap --arch=amd64 stable /container/bar}
+	\item {\tt semanage fcontext -a -t container\_file\_t '/container(/.*)?'}
+	\item {\tt restorecon -R /container/}
+\end{itemize}	
+\end{frame}
+
 
 \begin{frame}[fragile]
 \frametitle{aaa}
@@ -144,6 +175,30 @@ o
 \end{frame}
 
 \begin{frame}
+	\frametitle{Zarządzanie storage kontenera}
+	\begin{itemize}
+		\item System plików root - osobny dla każdego kontenera?
+		\item Mount root ro
+		\item btrfs
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Dostęp do katalogów hosta z kontenera}
+	\begin{itemize}
+		\item --bind
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Alternatywa dla Dockera?}
+\begin{itemize}
+	\item Mechanizmy dostarczane przez systemd są bardziej niskopoziomowe.
+	\item {\tt rkt} używa {\tt systemd-nspawn}.
+\end{itemize}	
+\end{frame}
+\begin{frame}
+
 \frametitle{Koniec\ldots}
 \begin{center}
 \includegraphics[scale=0.5]{img-oseclogo.png}
