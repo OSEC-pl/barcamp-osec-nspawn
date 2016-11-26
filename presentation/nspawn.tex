@@ -152,8 +152,15 @@
 \begin{itemize}
 	\item Fedora: {\tt dnf --releasever=24 --installroot=/container/foo/ install systemd passwd dnf fedora-release}
 	\item Debian: {\tt debootstrap --arch=amd64 stable /container/bar}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{SELinux}
+\begin{itemize}
 	\item {\tt semanage fcontext -a -t container\_file\_t '/container(/.*)?'}
 	\item {\tt restorecon -R /container/}
+	\item Możliwa bardziej zaawansowana polityka, wykraczająca poza typy {\tt container*}.
 \end{itemize}	
 \end{frame}
 
