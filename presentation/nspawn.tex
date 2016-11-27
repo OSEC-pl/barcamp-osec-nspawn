@@ -75,30 +75,6 @@
 \setlength{\tabcolsep}{8pt}
 \renewcommand{\arraystretch}{1.2}
 
-%\lstset{
-%	language=java,
-%	basicstyle=\tiny,
-%	breaklines=true,
-%	escapechar=\@,
-%	commentstyle=\color{OSEC-red}
-%}
-
-%\AtBeginSection[]{
-%	\frame{
-%
-%		\begin{center}
-%
-%			{\usebeamerfont{section name}\usebeamercolor[fg]{section name}Część~\insertsectionnumber}
-%			\vskip1em\par
-%
-%			\begin{beamercolorbox}[sep=12pt,center]{palette primary}
-%				\usebeamerfont{section title}\insertsection\par
-%			\end{beamercolorbox}
-%		\end{center}
-%		%\sectionpage
-%	}
-%}
-
 \title{systemd-nspawn \\ kontenery bliższe sercu administratora}
 \author{Radosław Kujawa -- radoslaw.kujawa@osec.pl}
 \institute{OSEC}
@@ -159,7 +135,6 @@
 	\item Debian: {\tt debootstrap --arch=amd64 stable /container/bar}
 	\item Istnieje możliwość instalacji innej dystrybucji niż system hosta wewnątrz kontenera.
 	\item Z wykorzystaniem innych narzędzi specyficznych dla danej dystrybucji.
-	\item Oparta o obraz kontenera (jak w Dockerze).
 \end{itemize}
 \end{frame}
 
@@ -191,6 +166,17 @@
 \end{frame}
 
 \begin{frame}
+\frametitle{Korzystanie z gotowych kontenerów}
+\begin{itemize}
+	\item Eksport własnego kontenera: {\tt machinectl export-tar kontener plik}.
+	\item Import kontenera: {\tt machinectl ...}
+	\item Import kontenera z sieci: {\tt machinectl pull-raw \href{https://dl.fedoraproject.org/pub/fedora/linux/releases/25/CloudImages/x86\_64/images/Fedora-Cloud-Base-25-1.3.x86\_64.raw.xz}{Obraz-Cloud-Fedora}}
+	\item machinectl pull
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
 \frametitle{Zarządzanie z poziomu hosta}
 \begin{itemize}
 	\item {\tt machinectl status kontener}
@@ -213,7 +199,6 @@ o
 \begin{itemize}
 	\item foo {\tt bbb\_aaarr}.
 \end{itemize}
-
 \end{frame}
 
 \begin{frame}
@@ -233,14 +218,31 @@ o
 \end{frame}
 
 \begin{frame}
+\frametitle{Zarządzanie siecią}
+\begin{itemize}
+	\item Wydzielenie interfejsu hosta dla kontenera: {\tt --network-interface}.
+	\item Forward portów do kontenera {\tt --port}.
+	\item Wirtualny interfejs między hostem a kontenerem: {\tt --network-veth}.
+	\item Interfejs kontenera do bridge hosta: {\tt --network-bridge}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
 \frametitle{Alternatywa dla Dockera?}
 \begin{itemize}
 	\item Mechanizmy dostarczane przez systemd są bardziej niskopoziomowe.
 	\item {\tt rkt} używa {\tt systemd-nspawn}.
 \end{itemize}	
 \end{frame}
-\begin{frame}
 
+\begin{frame}
+\frametitle{Podsumowując...}
+\begin{itemize}
+	\item Konteneryzacja oparta o {\tt systemd-nspawn} 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
 \frametitle{Koniec\ldots}
 \begin{center}
 \includegraphics[scale=0.5]{img-oseclogo.png}
@@ -250,7 +252,6 @@ Dziękuje!
 Czy są pytania?
 
 \end{center}
-
 \end{frame}
- 
 \end{document}
+
