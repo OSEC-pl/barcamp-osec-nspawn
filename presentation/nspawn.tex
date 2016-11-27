@@ -128,11 +128,11 @@
 \begin{frame}
 \frametitle{Instalacja kontenera}
 \begin{itemize}
-	\item Fedora: {\tt dnf --releasever=25 --installroot=/container/foo/ install systemd passwd dnf fedora-release}
+	\item Fedora: {\tt dnf --releasever=25 --installroot=/var/lib/machines/foo/ install systemd passwd dnf fedora-release}
 	\begin{itemize}
 		\item Uwaga: cache {\tt dnf} jest {\it wewnątrz} kontenera... 
 	\end{itemize}
-	\item Debian: {\tt debootstrap --arch=amd64 stable /container/bar}
+	\item Debian: {\tt debootstrap --arch=amd64 stable /var/lib/machines/bar}
 	\item Istnieje możliwość instalacji innej dystrybucji niż system hosta wewnątrz kontenera.
 	\item Z wykorzystaniem innych narzędzi specyficznych dla danej dystrybucji.
 \end{itemize}
@@ -153,12 +153,12 @@
 \begin{itemize}
 	\item Ustawienie hasła roota
 	\begin{itemize}
-		\item {\tt systemd-nspawn -D /container/foo}
+		\item {\tt systemd-nspawn -D /var/lib/machines/foo}
 	\end{itemize}
 	\item Start kontenera
 	\begin{itemize}
-		\item {\tt systemd-nspawn -bD /container/foo} (start interaktywny)
-		\item {\tt systemd-nspawn -D /container/foo /opt/app} (uruchomienie polecenia w kontenerze)
+		\item {\tt systemd-nspawn -bD /var/lib/machines/foo} (start interaktywny)
+		\item {\tt systemd-nspawn -D /var/lib/machines/foo /opt/app} (uruchomienie polecenia w kontenerze)
 		\item Tworzy jednostkę systemd {\tt machine-nazwa.scope} (transient).
 		\item Jest także widoczny w {\tt machinectl -l}.
 	\end{itemize}	
@@ -168,13 +168,21 @@
 \begin{frame}
 \frametitle{Korzystanie z gotowych kontenerów}
 \begin{itemize}
-	\item Eksport własnego kontenera: {\tt machinectl export-tar kontener plik}.
-	\item Import kontenera: {\tt machinectl ...}
-	\item Import kontenera z sieci: {\tt machinectl pull-raw \href{https://dl.fedoraproject.org/pub/fedora/linux/releases/25/CloudImages/x86\_64/images/Fedora-Cloud-Base-25-1.3.x86\_64.raw.xz}{Obraz-Cloud-Fedora}}
-	\item machinectl pull
+%	\item Eksport własnego kontenera: {\tt machinectl export-tar kontener plik}.
+	\item Import kontenera: {\tt machinectl import-tar / import-raw}
+	\item Import kontenera z sieci: {\tt machinectl pull-raw \href{https://dl.fedoraproject.org/pub/fedora/linux/releases/25/CloudImages/x86\_64/images/Fedora-Cloud-Base-25-1.3.x86\_64.raw.xz}{Fedora-Cloud-Base-25-1.3.x86\_64}}
+	\item Listowanie obrazów: {\tt machinectl list-images}
 \end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{Start kontenera wraz ze startem hosta}
+\begin{itemize}
+	\item {\tt systemctl enable machines.target}
+	\item {\tt systemctl enable systemd-nspawn@foo.service}
+	\item Dostosowanie jednostki {\tt systemd-nspawn@.service}
+\end{itemize}
+\end{frame}
 
 \begin{frame}
 \frametitle{Zarządzanie z poziomu hosta}
@@ -223,7 +231,7 @@ o
 	\item Wydzielenie interfejsu hosta dla kontenera: {\tt --network-interface}.
 	\item Forward portów do kontenera {\tt --port}.
 	\item Wirtualny interfejs między hostem a kontenerem: {\tt --network-veth}.
-	\item Interfejs kontenera do bridge hosta: {\tt --network-bridge}
+	\item Wirtualny interfejs kontenera do bridge hosta: {\tt --network-bridge}
 \end{itemize}
 \end{frame}
 
