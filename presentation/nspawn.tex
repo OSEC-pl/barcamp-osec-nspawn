@@ -122,7 +122,7 @@
 \frametitle{Instalacja}
 \begin{itemize}
 	\item Dostępne od Fedora 19.
-	\item Zalecane systemd 231 lub nowsze (Fedora 25).
+	\item Zalecane systemd 231 lub nowsze -- Fedora 25.
 	\item Paczka {\tt systemd-container} dostarcza potrzebne narzędzia.
 	\item To wszystko! \Smiley
 \end{itemize}
@@ -188,6 +188,8 @@
 	\item {\tt systemctl enable machines.target}.
 	\item {\tt systemctl enable systemd-nspawn@foo.service}.
 	\item Dostosowanie jednostki {\tt systemd-nspawn@.service}.
+	\item ... lub {\tt /etc/systemd/nspawn/foo.nspawn}.
+	\item Możliwe oczekiwanie przez hosta na start kontenera, celem budowania zależności ({\tt --notify-ready}).
 \end{itemize}
 \end{frame}
 
@@ -204,8 +206,12 @@
 \begin{frame}
 \frametitle{Zarządzanie storage kontenera}
 \begin{itemize}
-	\item System plików root kontenera - domyślnie osobny dla każdego.
+	\item System plików root kontenera -- domyślnie osobny dla każdego.
 	\item Rozwiązaniem BTRFS.
+	\begin{itemize}
+		\item {\tt --template}.
+		\item Tryb ,,ephemeral'' ({\tt -x}).
+	\end{itemize}
 	\item Mount root ro.
 	\item Dostęp do katalogów hosta z poziomu kontenera: {\tt --bind}.
 \end{itemize}
@@ -224,7 +230,7 @@
 \begin{frame}
 \frametitle{Podsumowując...}
 \begin{itemize}
-	\item Mechanizmy dostarczane przez systemd są bardziej niskopoziomowe.
+	\item Mechanizmy dostarczane przez systemd są bardziej niskopoziomowe niż np. Dockera.
 	\item Bardziej konfigurowalne z perspektywy administratora.
 	\item Kontenery nie są mechanizmem bezpieczeństwa.
 	\item Próba przerzucenia klasycznych metod administracji do kontenerów może nie być właściwym rozwiązaniem.
