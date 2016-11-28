@@ -101,11 +101,13 @@
 	\item Potencjalne utrudnienie w procesie wdrożenia na produkcje oraz późniejszym zarządzaniu.
 	\item Kontener - zunifikowany sposób dostawy aplikacji, od developera do administratora?
 	\item Specyfikacja kontenera jako elementu budulcowego systemu dalej nie rozwiązuje problemów komunikacyjnych. 
+	\item Docker budzi grozę wśród wielu osób zarządzających infrastrukturą.
+	\item Konteneryzacja bardziej przyjazna adminom -- {\tt systemd-nspawn} -- zademonstrujmy jak prosta i szybka jest!
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Kontenery systemd}
+\frametitle{Kontenery systemd-nspawn}
 \begin{itemize}
 	\item Oparte o mechanizm namespace.
 	\item Dobrze zintegrowane z systemd.
@@ -119,6 +121,7 @@
 \begin{frame}
 \frametitle{Instalacja}
 \begin{itemize}
+	\item Dostępne od Fedora 19.
 	\item Zalecane systemd 231 lub nowsze (Fedora 25).
 	\item Paczka {\tt systemd-container} dostarcza potrzebne narzędzia.
 	\item To wszystko! \Smiley
@@ -128,13 +131,17 @@
 \begin{frame}
 \frametitle{Instalacja kontenera}
 \begin{itemize}
-	\item Fedora: {\tt dnf --releasever=25 --installroot=/var/lib/machines/foo/ install systemd passwd dnf fedora-release}
+	\item Fedora: 
 	\begin{itemize}
+		\item {\tt dnf --releasever=25 --installroot=/var/lib/machines/foo/ install systemd passwd dnf fedora-release}
 		\item Uwaga: cache {\tt dnf} jest {\it wewnątrz} kontenera... 
 	\end{itemize}
-	\item Debian: {\tt debootstrap --arch=amd64 stable /var/lib/machines/bar}
-	\item Istnieje możliwość instalacji innej dystrybucji niż system hosta wewnątrz kontenera.
+	\item Debian
+	\begin{itemize}
+		\item {\tt debootstrap --arch=amd64 stable /var/lib/machines/bar}
+	\end{itemize}
 	\item Z wykorzystaniem innych narzędzi specyficznych dla danej dystrybucji.
+	\item Istnieje możliwość instalacji innej dystrybucji niż system hosta wewnątrz kontenera!
 \end{itemize}
 \end{frame}
 
@@ -151,11 +158,11 @@
 \begin{frame}
 \frametitle{Start kontenera}
 \begin{itemize}
-	\item Ustawienie hasła roota
+	\item Ustawienie hasła roota.
 	\begin{itemize}
 		\item {\tt systemd-nspawn -D /var/lib/machines/foo}
 	\end{itemize}
-	\item Start kontenera
+	\item Start kontenera.
 	\begin{itemize}
 		\item {\tt systemd-nspawn -bD /var/lib/machines/foo} (start interaktywny)
 		\item {\tt systemd-nspawn -D /var/lib/machines/foo /opt/app} (uruchomienie polecenia w kontenerze)
@@ -169,59 +176,38 @@
 \frametitle{Korzystanie z gotowych kontenerów}
 \begin{itemize}
 %	\item Eksport własnego kontenera: {\tt machinectl export-tar kontener plik}.
-	\item Import kontenera: {\tt machinectl import-tar / import-raw}
-	\item Import kontenera z sieci: {\tt machinectl pull-raw \href{https://dl.fedoraproject.org/pub/fedora/linux/releases/25/CloudImages/x86\_64/images/Fedora-Cloud-Base-25-1.3.x86\_64.raw.xz}{Fedora-Cloud-Base-25-1.3.x86\_64}}
-	\item Listowanie obrazów: {\tt machinectl list-images}
+	\item Import kontenera: {\tt machinectl import-tar / import-raw}.
+	\item Import kontenera z sieci: {\tt machinectl pull-raw \href{https://dl.fedoraproject.org/pub/fedora/linux/releases/25/CloudImages/x86\_64/images/Fedora-Cloud-Base-25-1.3.x86\_64.raw.xz}{Fedora-Cloud-Base-25-1.3.x86\_64}}.
+	\item Listowanie obrazów: {\tt machinectl list-images}.
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Start kontenera wraz ze startem hosta}
 \begin{itemize}
-	\item {\tt systemctl enable machines.target}
-	\item {\tt systemctl enable systemd-nspawn@foo.service}
-	\item Dostosowanie jednostki {\tt systemd-nspawn@.service}
+	\item {\tt systemctl enable machines.target}.
+	\item {\tt systemctl enable systemd-nspawn@foo.service}.
+	\item Dostosowanie jednostki {\tt systemd-nspawn@.service}.
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Zarządzanie z poziomu hosta}
 \begin{itemize}
-	\item {\tt machinectl status kontener}
-	\item {\tt systemctl -M kontener}
-	\item {\tt journalctl -M kontener}
+	\item {\tt machinectl status kontener}.
+	\item {\tt systemctl -M kontener}.
+	\item {\tt journalctl -M kontener}.
 	\item Procesy kontenera są widoczne w systemie hosta (dodatkowe pole {\tt machine} w {\tt ps}.
-\end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{aaa}
-\scriptsize
-\begin{verbatim}
-ooo oooooooo
-oo
-ooo
-o
-\end{verbatim}
-\normalsize
-\begin{itemize}
-	\item foo {\tt bbb\_aaarr}.
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Zarządzanie storage kontenera}
 \begin{itemize}
-	\item System plików root - domyślnie osobny dla każdego kontenera
-	\item Mount root ro
-	\item btrfs
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Dostęp do katalogów hosta z kontenera}
-\begin{itemize}
-	\item --bind
+	\item System plików root kontenera - domyślnie osobny dla każdego.
+	\item Rozwiązaniem BTRFS.
+	\item Mount root ro.
+	\item Dostęp do katalogów hosta z poziomu kontenera: {\tt --bind}.
 \end{itemize}
 \end{frame}
 
@@ -231,23 +217,19 @@ o
 	\item Wydzielenie interfejsu hosta dla kontenera: {\tt --network-interface}.
 	\item Forward portów do kontenera {\tt --port}.
 	\item Wirtualny interfejs między hostem a kontenerem: {\tt --network-veth}.
-	\item Wirtualny interfejs kontenera do bridge hosta: {\tt --network-bridge}
+	\item Wirtualny interfejs kontenera do bridge hosta: {\tt --network-bridge}.
 \end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Alternatywa dla Dockera?}
-\begin{itemize}
-	\item Mechanizmy dostarczane przez systemd są bardziej niskopoziomowe.
-	\item {\tt rkt} używa {\tt systemd-nspawn}.
-\end{itemize}	
 \end{frame}
 
 \begin{frame}
 \frametitle{Podsumowując...}
 \begin{itemize}
-	\item Konteneryzacja oparta o {\tt systemd-nspawn} 
-\end{itemize}
+	\item Mechanizmy dostarczane przez systemd są bardziej niskopoziomowe.
+	\item Bardziej konfigurowalne z perspektywy administratora.
+	\item Kontenery nie są mechanizmem bezpieczeństwa.
+	\item Próba przerzucenia klasycznych metod administracji do kontenerów może nie być właściwym rozwiązaniem.
+	\item {\tt rkt} także używa {\tt systemd-nspawn}... i jest kompatybilny z Kubernetesem.
+\end{itemize}	
 \end{frame}
 
 \begin{frame}
